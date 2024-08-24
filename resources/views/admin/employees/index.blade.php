@@ -1,3 +1,8 @@
+<x-slot name="title">Attendance Dashboard</x-slot>
+    <x-app-layout>
+
+        <x-main-content>
+
 <h1>
     Hello Employee view
 </h1>
@@ -9,4 +14,5 @@
         @endforeach
     </ul>
 
- 
+        </x-main-content>
+    </x-app-layout>

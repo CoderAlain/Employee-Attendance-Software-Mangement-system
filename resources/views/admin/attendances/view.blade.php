@@ -1,7 +1,8 @@
 <!-- resources/views/admin/attendances/view.blade.php -->
-{{-- @extends('layouts.admin') --}}
+<x-slot name="title">Attendance Dashboard</x-slot>
+    <x-app-layout>
+        <x-main-content>
 
-{{-- @section('content') --}}
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-bold mb-4">Attendance Records for {{ $employee->name }}</h1>
 
@@ -26,4 +27,5 @@
             </tbody>
         </table>
     </div>
-{{-- @endsection --}}
+        </x-main-content>
+    </x-app-layout>

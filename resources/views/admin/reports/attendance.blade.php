@@ -35,9 +35,11 @@
 <!-- resources/views/admin/reports/attendance.blade.php -->
 
 
-{{-- @extends('layouts.admin') --}}
+<x-slot name="title">Attendance Dashboard</x-slot>
+    <x-app-layout>
 
-{{-- @section('content') --}}
+        <x-main-content>
+
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-bold mb-4">Attendance Report</h1>
 
@@ -69,4 +71,5 @@
             </tbody>
         </table>
     </div>
-{{-- @endsection --}}
+        </x-main-content>
+    </x-app-layout>
