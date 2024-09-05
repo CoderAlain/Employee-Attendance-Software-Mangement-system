@@ -39,8 +39,12 @@ class AttendanceController extends Controller
         $today = Carbon::today();
 
         // Get the user's latitude and longitude from the request
-        $userLatitude = 3.850203382675274; // Example latitude
-    $userLongitude = 11.486376414652455; // Example longitude
+        $userLatitude = 3.850203382675274; 
+        $userLongitude = 11.486376414652455; 
+
+    // Get the user's latitude and longitude from the request
+        // $userLatitude = $request->input('latitude');
+        // $userLongitude = $request->input('longitude');
 
         // Calculate the distance between the user's location and the company's location
         $distance = $this->calculateDistance($userLatitude, $userLongitude);
