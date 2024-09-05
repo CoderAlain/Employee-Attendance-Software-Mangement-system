@@ -20,14 +20,32 @@ class AdminController extends Controller
         $attendanceCount = Attendance::count();
         $recentAttendances = Attendance::orderBy('created_at', 'desc')->take(5)->get();
 
-        // Return a view with this data
-        return view('admin.dashboard', compact('employeeCount', 'attendanceCount', 'recentAttendances'));
+        // Fetch total employees
+        $totalEmployees = User::count();
 
-        // Gather some data for the dashboard (example data)
-    
+        // Fetch today's attendance data
+        $today = Carbon::today();
+        $attendances = Attendance::with('user')
+            ->whereDate('date', $today)
+            ->get();
+
+        // Employees present today
+        $presentToday = $attendances->where('is_absent', false)->count();
+
+        // Employees absent today
+        $absentToday = $attendances->where('is_absent', true)->count();
+
+        // Employees late today
+        $lateToday = $attendances->where('is_late', true)->count();
+
+        // Real-time attendance updates (all employees and their statuses)
+        $realTimeAttendance = $attendances;
+
+        // Pass data to the view
+        return view('admin.dashboard', compact('totalEmployees', 'presentToday', 'absentToday', 'lateToday', 'realTimeAttendance', 'employeeCount', 'attendanceCount', 'recentAttendances' ));
     }
-
-    // Other admin methods can go here...
+ 
+    
     public function manageEmployees()
     {
         // Fetch all employees

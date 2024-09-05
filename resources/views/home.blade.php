@@ -10,7 +10,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
@@ -38,16 +38,15 @@
                     <p class="mt-6 text-lg leading-8 text-gray-300">Login check in and all is good. Don't forget to
                         checkout</p>
                     <div class="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
-                        <a href="/login"
+                        <a href="{{ route('login') }}"
                             class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Get
                             started</a>
 
                     </div>
                 </div>
                 <div class="relative mt-16 h-80 lg:mt-6">
-                    {{-- <img class="absolute left-0 top-0 w-[57rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10" src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png" alt="App screenshot" width="1824" height="1080"> --}}
                     <img src="{{ asset('images/leave.jpeg') }}" alt="Laravel Image"
-                        class="absolute left-0 top-0 w-[35rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
+                        class="absolute left-8 top-0 w-[35rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
                         width="1824" height="1080">
                 </div>
             </div>

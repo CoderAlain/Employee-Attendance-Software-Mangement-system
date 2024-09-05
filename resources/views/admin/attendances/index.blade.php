@@ -1,7 +1,7 @@
 <!-- resources/views/admin/attendances/index.blade.php -->
 
 <x-slot name="title">Attendance Dashboard</x-slot>
-    <x-app-layout>
+    <x-adminDashboard>
         <x-main-content>
 
     <div class="container mx-auto p-6">
@@ -32,4 +32,4 @@
     </div>
 
         </x-main-content>
-    </x-app-layout>
+    </x-adminDashboard>
