@@ -1,4 +1,3 @@
-
 <!-- resources/views/components/layout.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
@@ -9,11 +8,11 @@
     <title>{{ $title ?? 'Dashboard UI' }}</title>
 
     <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -28,10 +27,13 @@
             <!-- Navbar Component -->
             @include('layouts.navigation')
 
-            <!-- Dynamic Content Slot -->
-            <div class="flex-1 p-6 bg-gray-100">       
-                    {{ $slot }}
+            
+            <!-- Main Content Wrapper -->
+            <div id="mainContent" class="flex-1 sm:ml-64 p-6 transition-all duration-300">
+                <!-- Page content goes here -->
+                {{ $slot }}
             </div>
+
         </div>
     </div>
 

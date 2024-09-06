@@ -49,50 +49,63 @@ class AttendanceController extends Controller
         // Calculate the distance between the user's location and the company's location
         $distance = $this->calculateDistance($userLatitude, $userLongitude);
 
-        // Check if the user is within the allowed radius
-        if ($distance > $this->radius) {
-            return redirect()->route('attendance.index')->with('error', 'You are not within the company location.');
-        }
+        // Check if the employee has already checked in today
+    $existingAttendance = Attendance::where('user_id', $user->id)
+        ->whereDate('date', $today) // Ensure it's today's date
+        ->first();
 
-        // Check if the user has already checked in today
+      // Check if the employee has already checked in today
         $existingAttendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today->toDateString())
+            ->whereDate('date', $today) // Check if there's already a record for today
             ->first();
 
-        if (!$existingAttendance) {
-            $attendance = new Attendance();
-            $attendance->user_id = $user->id;
-            $attendance->date = $today->toDateString();
-            $attendance->check_in_time = $this->getCurrentCheckInTime($today);
-            $attendance->save();
-
-            return redirect()->route('attendance.index')->with('success', 'Checked in successfully.');
-        } else {
+        // If the employee already checked in today, deny another check-in
+        if ($existingAttendance) {
             return redirect()->back()->with('error', 'You have already checked in today.');
         }
+
+        // Create a new attendance record using the server-side time (ignoring device time)
+        Attendance::create([
+            'user_id' => $user->id,
+            'date' => $today, // Server's current date
+            'check_in_time' => Carbon::now(), // Server's current time
+            'location' => $request->input('location'), // Optional location if you track it
+        ]);
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Check-in successful.');
+        
     }
 
     // Handle the check-out process
     public function checkOut(Request $request)
     {
         $user = Auth::user();
-        $today = Carbon::today();
+        $today = Carbon::today(); // Server's current date
 
-        // Check if the user has already checked in today
+        // Fetch the attendance record for today
         $attendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today->toDateString())
+            ->whereDate('date', $today)
             ->first();
 
-        if ($attendance && !$attendance->check_out_time) {
-            // Set the check-out time
-            $attendance->check_out_time = $this->getCurrentCheckOutTime();
-            $attendance->save();
-
-            return redirect()->route('attendance.index')->with('success', 'Checked out successfully.');
-        } else {
-            return redirect()->back()->with('error', 'You have either not checked in or already checked out today.');
+        // If no check-in record found for today, deny check-out
+        if (!$attendance) {
+            return redirect()->back()->with('error', 'No check-in record found for today.');
         }
+
+        // If already checked out, prevent another check-out
+        if ($attendance->check_out_time) {
+            return redirect()->back()->with('error', 'You have already checked out today.');
+        }
+
+        // Update the attendance record with the server-side check-out time
+        $attendance->update([
+            'check_out_time' => Carbon::now(), // Server's current time
+        ]);
+
+        return redirect()->back()->with('success', 'Check-out successful.');
     }
+
 
     // Get the appropriate check-in time
     private function getCurrentCheckInTime()

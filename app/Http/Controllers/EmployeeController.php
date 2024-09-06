@@ -34,7 +34,7 @@
 
 //         return view('employees.dashboard', compact('totalHoursWorked', 'daysLate', 'absences', 'attendances'));
 //     }
- 
+
 //     // Show the form for creating a new employee
 //     public function create()
 //     {
@@ -104,12 +104,12 @@
 //     }
 // }
 
- namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
 use App\Models\User; // Assuming User model is being used for employees
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
- use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Attendance;
 
@@ -122,17 +122,25 @@ class EmployeeController extends Controller
     {
         $employees = User::all(); // Fetch all employees
         $user = Auth::user();
-        
-            //  Get all attendance records for the logged-in employee
+
+        //  Get all attendance records for the logged-in employee
         $attendances = Attendance::where('user_id', $user->id)->get();
 
         // Calculate total hours worked
         $totalHoursWorked = $attendances->sum(function ($attendance) {
-            if ($attendance->check_in_time && $attendance->check_out_time) {
-                return $attendance->check_out_time->diffInHours($attendance->check_in_time);
-            }
-            return 0;
-        });
+    if ($attendance->check_in_time && $attendance->check_out_time) {
+        // Ensure check_out_time is later than check_in_time
+        $minutesWorked = $attendance->check_in_time->diffInMinutes($attendance->check_out_time);
+        
+        // Convert minutes to hours and format the result to 3 decimal places
+        return $minutesWorked / 60;
+    }
+    return 0;
+});
+
+// Ensure the final result is properly formatted to 3 decimal places
+$totalHoursWorked = number_format(abs($totalHoursWorked), 3);
+
 
         // Count days late
         $daysLate = $attendances->where('is_late', true)->count();
@@ -140,18 +148,17 @@ class EmployeeController extends Controller
         // Count absences
         $absences = $attendances->where('is_absent', true)->count();
 
-        
 
-    // $user = Auth::user(); // Assuming you're using user authentication
 
-    if ($user->role === 'admin') {
-        // Return the admin view
-        return view('admin.employees.index', compact('employees'));
-    }
+        // $user = Auth::user(); // Assuming you're using user authentication
 
-    // Return the employee view if the role is employee
-    return view('employees.dashboard', compact('totalHoursWorked', 'daysLate', 'absences', 'attendances'));
+        if ($user->role === 'admin') {
+            // Return the admin view
+            return view('admin.employees.index', compact('employees'));
+        }
 
+        // Return the employee view if the role is employee
+        return view('employees.dashboard', compact('totalHoursWorked', 'daysLate', 'absences', 'attendances'));
     }
 
     /**

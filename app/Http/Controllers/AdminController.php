@@ -88,11 +88,17 @@ class AdminController extends Controller
 
         // Calculate work hours, overtime, absences
         $totalWorkHours = $attendances->sum(function ($attendance) {
-            if ($attendance->check_in_time && $attendance->check_out_time) {
-                return $attendance->check_out_time->diffInHours($attendance->check_in_time);
-            }
-            return 0;
-        });
+       if ($attendance->check_in_time && $attendance->check_out_time) {
+        // Calculate the difference in minutes and convert to hours
+        $minutesWorked = $attendance->check_out_time->diffInMinutes($attendance->check_in_time);
+        return $minutesWorked / 60; // Convert minutes to hours
+       }
+        return 0;
+    });
+
+    // Format total work hours to 3 decimal places
+    $totalWorkHours = number_format($totalWorkHours, 3);
+
 
         $totalAbsences = $attendances->where('is_absent', true)->count();
 
